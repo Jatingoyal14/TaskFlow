@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - MERN Task Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Authentication Section -->
+    <div id="auth-container" class="auth-container">
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form card">
+            <div class="auth-header">
+                <h1>TaskFlow</h1>
+                <p>Sign in to manage your tasks</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" required>
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" required>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">Sign In</button>
+                <div class="auth-switch">
+                    <p>Don't have an account? <a href="#" id="showRegister">Create one</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-form card hidden">
+            <div class="auth-header">
+                <h1>TaskFlow</h1>
+                <p>Create your account</p>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="registerName">Full Name</label>
+                    <input type="text" id="registerName" class="form-control" required>
+                    <span class="error-message" id="registerNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" required>
+                    <span class="error-message" id="registerEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" class="form-control" required>
+                    <span class="error-message" id="registerPasswordError"></span>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">Create Account</button>
+                <div class="auth-switch">
+                    <p>Already have an account? <a href="#" id="showLogin">Sign in</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>TaskFlow</h1>
+                    <span class="user-greeting">Welcome, <span id="userName"></span>!</span>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn--outline" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="overdueTasks">0</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-container">
+            <div class="controls-left">
+                <button class="btn btn--primary" id="addTaskBtn">+ Add New Task</button>
+            </div>
+            <div class="controls-right">
+                <input type="text" class="form-control search-input" id="searchInput" placeholder="Search tasks...">
+                <select class="form-control filter-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+                <select class="form-control filter-select" id="priorityFilter">
+                    <option value="">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Task Columns -->
+        <div class="task-columns">
+            <div class="task-column">
+                <div class="column-header">
+                    <h3>To Do</h3>
+                    <span class="task-count" id="todoCount">0</span>
+                </div>
+                <div class="task-list" id="todoList"></div>
+            </div>
+            <div class="task-column">
+                <div class="column-header">
+                    <h3>In Progress</h3>
+                    <span class="task-count" id="progressCount">0</span>
+                </div>
+                <div class="task-list" id="progressList"></div>
+            </div>
+            <div class="task-column">
+                <div class="column-header">
+                    <h3>Completed</h3>
+                    <span class="task-count" id="completedCount">0</span>
+                </div>
+                <div class="task-list" id="completedList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label class="form-label" for="taskTitle">Title</label>
+                    <input type="text" id="taskTitle" class="form-control" required>
+                    <span class="error-message" id="titleError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="taskDescription">Description</label>
+                    <textarea id="taskDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="taskCategory">Category</label>
+                        <select id="taskCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="taskPriority">Priority</label>
+                        <select id="taskPriority" class="form-control" required>
+                            <option value="">Select Priority</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="taskDueDate">Due Date</label>
+                        <input type="date" id="taskDueDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="taskStatus">Status</label>
+                        <select id="taskStatus" class="form-control" required>
+                            <option value="To Do">To Do</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary" id="cancelTask">Cancel</button>
+                    <button type="submit" class="btn btn--primary" id="saveTask">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
